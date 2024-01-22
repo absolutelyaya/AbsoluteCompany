@@ -16,13 +16,13 @@ namespace AbsoluteCompany
     [BepInDependency(LethalLib.Plugin.ModGUID)]
     public class AbsoluteCompanyMod : BaseUnityPlugin
     {
-        private const string guid = "Absolutelyaya.AbsoluteCompany", modName = "AbsoluteCompany", modVersion = "0.0.1";
+        private const string guid = "Absolutelyaya.AbsoluteCompany", modName = "AbsoluteCompany", modVersion = "1.0.1";
         private readonly Harmony harmony = new Harmony(guid);
 
         private static AbsoluteCompanyMod Instance;
         public static ManualLogSource logger;
         public static AssetBundle Assets;
-        private ConfigEntry<int> configBlueSkullRarity;
+        private ConfigEntry<int> configFlorpRarity;
 
         void Awake()
         {
@@ -31,7 +31,7 @@ namespace AbsoluteCompany
             logger = BepInEx.Logging.Logger.CreateLogSource(modName);
             logger.LogInfo("Absolutely Initialized.");
             Assets = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "absolute"));
-            configBlueSkullRarity = Config.Bind("Scrap", "FlorpRarity", 30, new ConfigDescription("How rare Florp is. Lower == Less Spawns.", new AcceptableValueRange<int>(0, 100)));
+            configFlorpRarity = Config.Bind("Scrap", "FlorpRarity", 30, new ConfigDescription("How rare Florp is. Lower == Less Spawns.", new AcceptableValueRange<int>(0, 100)));
             //RegisterScrap("blueskull");
             //RegisterScrap("redskull");
             RegisterScrap("florp");
@@ -45,7 +45,7 @@ namespace AbsoluteCompany
             if (item == null)
                 return;
             NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab);
-            Items.RegisterScrap(item, configBlueSkullRarity.Value, Levels.LevelTypes.All);
+            Items.RegisterScrap(item, configFlorpRarity.Value, Levels.LevelTypes.All);
             logger.LogInfo(string.Format("registered Scrap '{0}'.", id));
         }
 
@@ -72,9 +72,15 @@ namespace AbsoluteCompany.patches
         public static void CreateMannequinModel(SpringManAI __instance)
         {
             Transform modelBase = __instance.transform.Find("SpringManModel");
-            Renderer[] models = modelBase.GetComponentsInChildren<Renderer>();
-            foreach(Renderer r in models)
+            Transform head = modelBase.transform.Find("Head");
+            Transform body = modelBase.transform.Find("Body");
+            Renderer[] models = head.GetComponentsInChildren<Renderer>();
+            foreach (Renderer r in models)
                 r.enabled = false;
+            models = body.GetComponentsInChildren<Renderer>();
+            foreach (Renderer r in models)
+                r.enabled = false;
+
             Animator[] animators = modelBase.GetComponentsInChildren<Animator>();
             foreach (Animator r in animators)
                 r.enabled = false;

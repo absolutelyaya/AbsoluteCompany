@@ -11,5 +11,12 @@ A silly little mod for Lethal Company; I got a little too into the game and want
 
 # Changelog
 **v1.0.0**
-- added Florp Scrap
-- replaced Coil Heads with Mannequins from Ultrakill
+- Added Florp Scrap
+- Replaced Coil Heads with Mannequins from Ultrakill
+
+**v1.0.1**
+- Increased volume of Florp Scrap Sounds
+- Reduced weight of Florp slightly
+- Increased Florp value
+- Fixed Coil-Head Footstep sounds not playing sometimes
+- Fixed Coil-Heads not having a Map Marker
